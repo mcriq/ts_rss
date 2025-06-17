@@ -8,13 +8,13 @@ export async function handlerLogin(cmdName: string, ...args: string[]) {
 
   
   const userName = args[0];
-  const user = await getUser(userName);
+  const existingUser = await getUser(userName);
 
-  if (!user) {
-    throw new Error(`user: ${userName} does not exist`);
+  if (!existingUser) {
+    throw new Error(`user: ${userName} not found`);
   }
-  setUser(userName);
-  console.log(`Username has been set to: ${userName}`);
+  setUser(existingUser.name);
+  console.log(`User switched successfully!`);
 }
 
 export async function getAllUsers(cmdName: string, ...args: string[]) {
