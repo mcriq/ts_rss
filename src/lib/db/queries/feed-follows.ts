@@ -21,7 +21,12 @@ export async function createFeedFollow(userId: string, feedId: string) {
     .from(feedFollows)
     .innerJoin(users, eq(feedFollows.userId, users.id))
     .innerJoin(feeds, eq(feedFollows.feedId, feeds.id))
-    .where(and(eq(feedFollows.id, newFeedFollow.id), eq(users.id, newFeedFollow.userId)));
+    .where(
+      and(
+        eq(feedFollows.id, newFeedFollow.id),
+        eq(users.id, newFeedFollow.userId)
+      )
+    );
 
   return result;
 }
@@ -29,16 +34,25 @@ export async function createFeedFollow(userId: string, feedId: string) {
 export async function getFeedFollowsForUser(userId: string) {
   const result = await db
     .select({
-        id: feedFollows.id,
-        createdAt: feedFollows.createdAt,
-        updatedAt: feedFollows.updatedAt,
-        userId: feedFollows.userId,
-        feedId: feedFollows.feedId,
-        feedname: feeds.name,
+      id: feedFollows.id,
+      createdAt: feedFollows.createdAt,
+      updatedAt: feedFollows.updatedAt,
+      userId: feedFollows.userId,
+      feedId: feedFollows.feedId,
+      feedname: feeds.name,
     })
     .from(feedFollows)
     .innerJoin(feeds, eq(feedFollows.feedId, feeds.id))
     .where(eq(feedFollows.userId, userId));
+
+  return result;
+}
+
+export async function deleteFeedFollow(userId: string, feedId: string) {
+  const [result] = await db
+    .delete(feedFollows)
+    .where(and(eq(feedFollows.userId, userId), eq(feedFollows.feedId, feedId)))
+    .returning();
 
   return result;
 }
