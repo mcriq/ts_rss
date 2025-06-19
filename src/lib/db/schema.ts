@@ -20,12 +20,12 @@ export const feeds = pgTable("feeds", {
     .notNull()
     .defaultNow()
     .$onUpdate(() => new Date()),
-  lastFetchedAt: timestamp("last_fetched_at").$onUpdate(() => new Date()),
-  name: text("name").notNull(),
-  url: text("url").notNull().unique(),
-  userId: uuid("user_id")
+    name: text("name").notNull(),
+    url: text("url").notNull().unique(),
+    userId: uuid("user_id")
     .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
+    lastFetchAt: timestamp("last_fetch_at"),
 });
 
 export type Feed = typeof feeds.$inferSelect;
