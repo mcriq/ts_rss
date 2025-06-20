@@ -17,6 +17,7 @@ import {
   handlerFollow,
   handlerListFeedFollows,
 } from "./commands/feed-follows";
+import { handlerBrowse } from "./commands/browse";
 import { middlewareLoggedIn } from "./middleware";
 
 async function main() {
@@ -56,6 +57,11 @@ async function main() {
     commandsRegistry,
     "unfollow",
     middlewareLoggedIn(handlerUnfollow)
+  );
+  registerCommand(
+    commandsRegistry,
+    "browse",
+    middlewareLoggedIn(handlerBrowse)
   );
 
   try {
