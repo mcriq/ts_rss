@@ -1,5 +1,6 @@
 import { getNextFeedToFetch, markFeedFetched } from "../lib/db/queries/feeds";
-import { Feed } from "../lib/db/schema";
+import { createPost } from "../lib/db/queries/posts";
+import { Feed, type NewPost } from "../lib/db/schema";
 import { fetchFeed } from "../lib/rss";
 import { parseDuration } from "../lib/time";
 
@@ -51,6 +52,22 @@ async function scrapeFeed(feed: Feed) {
 
   if (!feedData) {
     throw new Error(`Error fetching feed data from ${feed.name}`);
+  }
+
+  for (const item of feedData.channel.item) {
+    console.log(`Found post: ${item.title}`);
+
+    const now = new Date();
+
+    await createPost({
+      url: item.link,
+      feedId: feed.id,
+      title: item.title,
+      createdAt: now,
+      updatedAt: now,
+      description: item.description,
+      publishedAt: new Date(item.pubDate),
+    } satisfies NewPost);
   }
 
   console.log(
